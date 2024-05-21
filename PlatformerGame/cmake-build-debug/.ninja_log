@@ -1,0 +1,23 @@
+# ninja log v5
+7	1289	7374835983597197	CMakeFiles/PlatformerGame.dir/win32_platform.cpp.obj	614b5c4f050ec158
+4	1181	7374829096670596	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+7	279	7374840979756130	build.ninja	93e2e27a3ed63bc7
+1291	1802	7374835987925455	PlatformerGame.exe	865a3e7ce0113f63
+9	1721	7374843530468802	CMakeFiles/PlatformerGame.dir/win32_platform.cpp.obj	614b5c4f050ec158
+1723	2082	7374843533457020	PlatformerGame.exe	865a3e7ce0113f63
+13	1867	7374851081455101	CMakeFiles/PlatformerGame.dir/win32_platform.cpp.obj	614b5c4f050ec158
+1869	2214	7374851084280379	PlatformerGame.exe	865a3e7ce0113f63
+12	2634	7374852428892210	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+5	116	7374852540782746	CMakeFiles/PlatformerGame.dir/win32_platform.cpp.obj	614b5c4f050ec158
+117	370	7374852542614697	PlatformerGame.exe	865a3e7ce0113f63
+10	2784	7374854039826627	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+2785	3231	7374854043606912	PlatformerGame.exe	865a3e7ce0113f63
+17	1227	7374855389520245	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+4	776	7374855799052476	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+778	1069	7374855801222646	PlatformerGame.exe	865a3e7ce0113f63
+4	1206	7374856219277789	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+1207	1600	7374856222471541	PlatformerGame.exe	865a3e7ce0113f63
+8	1827	7374857005988084	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+7	1470	7374857191704311	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+6	1295	7374857340791064	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f
+33	1569	7374857419054479	CMakeFiles/PlatformerGame.dir/main.cpp.obj	ff537d3ee02879f

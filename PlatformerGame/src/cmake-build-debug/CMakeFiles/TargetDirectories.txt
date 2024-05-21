@@ -1,0 +1,3 @@
+C:/Users/Bianca/Projects/Projects/PlatformerGame/src/cmake-build-debug/CMakeFiles/PlatformerGame.dir
+C:/Users/Bianca/Projects/Projects/PlatformerGame/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Bianca/Projects/Projects/PlatformerGame/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir

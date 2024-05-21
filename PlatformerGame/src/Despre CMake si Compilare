@@ -1,0 +1,16 @@
+Compilarea de mai multe fișiere sursă .cpp și .h într-un singur executabil:
+De regulă, în orice proiect C++ major vei avea mai multe fișiere .cpp și .h.
+Pentru a genera un executabil, compilatorul va realiza mai întâi compilarea (transformarea codului sursă în cod obiect) pentru fiecare fișier .cpp in mod individual.
+În această etapă, .h (header files) sunt folosite pentru a-i informa pe compilatoare despre structura diferitelor clase și funcții ce sunt utilizate în fișierele .cpp.
+ În faza următoare, link-erul va lega aceste fișiere de cod obiect pentru a forma un executabil.
+  Aceasta este modalitatea standard de compilare în proiectele C++.
+
+
+
+2.
+
+Compilarea de mai multe fișiere .cpp într-un singur fișier:
+ Acest proces este cunoscut sub numele de compilare "unity" sau "single compilation unit" (SCU).
+  Acesta implică combinarea tuturor fișierelor .cpp într-un singur fișier mare .cpp și apoi compilarea acelui fișier pentru a genera un executabil.
+   Acest lucru poate reduce timpul de compilare, deoarece compilatorul trebuie să parcurgă doar un singur fișier, reducând astfel timpul necesar pentru a analiza și a genera codul obiect.
+    Această metodă poate necesita unele modificări ale codului sursă, pentru a preveni conflictele care pot apărea atunci când se combină diferite fișiere .cpp.

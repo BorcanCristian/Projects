@@ -1,0 +1,191 @@
+Dupa implementarea functiei player_1_ si player_2_, fiind asemanatoare, o bagam intr-o functie:
+- "internal void simulate_player.
+Am schimbat coliziunile si mutat intr-p functie aabb_vs_aabb.
+Incep sa fac Scorul.(game.cpp)
+Am facut o logica de  score primitiva dar am comentat-o.
+Facem un draw_numer dupa care il definim in renderer.cpp.
+
+win32_Platform.cpp:
+
+Face parte din sursa principală a unui joc de platformă.
+Deși codul include mai multe fișiere .cpp, funcțiile principale se află în acest fișier. Iată o descriere a funcțiilor principale pe care le-am identificat în cod:
+
+window_callback: Aceasta este o funcție callback care este apelată de Windows de fiecare dată când se produce un eveniment legat de fereastra jocului.
+ Funcționează ca un dispecer pentru mesajele Windows, procesând mesaje precum WM_CLOSE (când utilizatorul încearcă să închidă fereastra), WM_SIZE (atunci când dimensiunea ferestrei se schimbă) și diverse evenimente de intrare.
+
+WinMain: Aceasta este funcția principală pentru orice aplicație Windows și este punctul de intrare în program.
+În acesta, fereastra jocului este creată și o buclă de joc este pornită.
+Bucla de joc continuă să ruleze până când variabila running este setată pe false, ceea ce se întâmplă atunci când se primește un mesaj WM_CLOSE.
+
+simulate_game: Aceasta este o funcție apelată în bucla principală de joc care pare să fie responsabilă pentru actualizarea stării jocului, inclusiv gestionarea intrărilor de la utilizator.
+ Din păcate, nu pot oferi mai multe detalii deoarece implementarea funcției nu este inclusă în fragmentul de cod furnizat.
+
+Sursa codului mai include și alte fișiere, Input_handler.cpp, renderer.cpp, și game.cpp, dar din moment ce nu au fost furnizate detalii despre conținutul acestora, nu pot oferi o descriere precisă a funcțiilor din aceste fișiere.
+În plus, observăm utilizarea structurilor de date, cum ar fi Render_State și Input, care păstrează starea de randare a jocului și inputurile de la utilizator, respectiv.
+ Există și o serie de variabile globale, cum ar fi running și render_state care păstrează starea aplicației și sunt accesibile de oriunde din cod.
+
+
+Pentru a înțelege pe deplin conținutul codului, avem nevoie de o imagine de ansamblu a funcțiilor utilizate aici.
+LRESULT CALLBACK window_callback(HWND hwnd, UINT uMSG, WPARAM wParam, LPARAM lParam):
+ Principala funcție de gestionare a mesajelor pentru fereastra aplicației.
+  Aceasta procesează evenimentele ferestrei, cum ar fi redimensionarea sau închiderea acesteia.
+   Dacă un mesaj nu este procesat de această funcție, el este trimis în mod implicit la procedura de fereastră predefinită.
+
+int WinMain(...): Punctul de intrare principal al aplicației. în aceasta funcție avem bucla principală a jocului, care găzduiește mesajele Windows, gestionează mecanismele de intrare și apelează la funcțiile de simulare și de randare.
+
+
+QueryPerformanceCounter(&frame_end_time) && QueryPerformanceCounter(&frame_begin_time):
+ Acestea permit măsurarea exactă a timpului necesar pentru un anumit set de operații sau pentru un cadru, ceea ce este esențial pentru randarea și simularea la un ritm constant al cadrelor.
+
+simulate_game(&input, delta_time): Această functie nu este definită în codul pe care ni l-ai furnizat, deci nu putem face decât presupuneri cu privire la funcționalitatea sa.
+
+
+ Dacă ne ghidăm după numele său, avem impresia că aceasta ar trebui să realizeze actualizarea stării jocului pentru fiecare cadru, bazându-se pe intrările utilizatorilor și pe timpul scurs între cadre.
+Funcția StretchDIBits: Se ocupă de randarea efectivă a stării jocului într-un context de dispozitiv - în acest caz, contextul dispozitivului ferestrei principale a jocului. Acesta copiază pixelii de la o sursă (bufferul nostru de pixeli) la o destinație (contextul dispozitivului ferestrei).
+În concluzie, acest cod pare a fi scheletul principal al unui joc în Windows, cu bucle de mesaje, manipulare a intrărilor și randare grafică. Toate acestea formează baza oricărui joc pe platforma Windows.
+
+
+
+
+
+
+
+Utility.cpp:
+Oferă funcții, macro-uri și tipuri de date utile care sunt utilizate în întregul proiect. În acest caz, pune la dispoziție mai multe definiții de tipuri de date pentru a avea o mai bună portabilitate a codului și pentru a facilita citirea codului, precum și o funcție utilă numită "clamp".
+
+typedef: Acestea creează aliasuri pentru diferite tipuri de date în C++. Aici avem aliasuri pentru toate tipurile de integer, de la 8 la 64 de biți, semnate și nesemnate, ceea ce face codul mult mai lizibil.
+
+#define: Aceste definiții sunt prelucrate de preprocesorul C++ și rezultă în înlocuirea tuturor instanțelor de global_variable și internal în cod cu cuvântul cheie static. Aceste macro-uri ajută la îmbunătățirea înțelesului codului făcându-l autoexplicabil în context.
+
+clamp: Aceasta este o funcție inline care se asigură că o anumită valoare se încadrează într-un interval specificat. Funcțiile inline sunt utile pentru funcțiile mici care sunt adesea solicitate, deoarece pot îmbunătăți performanța prin eliminarea overhead-ului asociat cu apelurile de funcții, la schimb, costul este o creștere ușoară a dimensiunii executabilului.
+
+În general, acest fișier pare a fi o colecție de utilități care ajută la îmbunătățirea citirii codului și la evitarea repetării codului în întregul proiect.
+
+
+
+
+
+
+
+
+
+
+
+Input_handler.cpp:
+Defineste structurile și enumerațiile necesare pentru a realiza gestionarea input-urilor (intrărilor) în joc.
+
+Button_State:
+ Această structură este folosită pentru a stoca starea unui buton la un anumit moment.
+ Conține două câmpuri:
+
+1) is_down: Un câmp boolean care indică dacă butonul este apăsat sau nu.
+
+
+2) changed: Un câmp boolean care indică dacă starea butonului s-a schimbat în ultimul frame de la ultima interogare.
+
+enum:
+ -> Această enumerație definește toate butoanele care pot fi apăsate în joc.
+ Conține direcții (sus, jos, stânga, dreapta), dar și alte butoane precum BUTTON_ENTER.
+  De asemenea, include BUTTON_COUNT ca ultimul element al enumerației, care este folosit pentru a cunoaște numărul total de butoane.
+
+Input:
+ -> Această structură reprezintă starea tuturor butoanelor dintr-un anumit moment. Conține un array de Button_State, unul pentru fiecare buton definit în enumerația de mai sus.
+ Acest array este indexat folosind valorile enumerației, permițând acces ușor la starea oricărui buton.
+
+În concluzie, acest fișier oferă instrumentele necesare pentru gestionarea intrărilor de la utilizator în joc, cum ar fi apăsarea sau eliberarea butoanelor, și este o componentă esențială a oricărui motor de joc.
+
+Renderer.cpp:
+
+Conține un set de funcții concepute pentru a realiza redarea de elemente grafice specifice pentru un joc, cum ar fi culisele sau obiectele din joc.
+
+Iată o scurta descriere a ceea ce face fiecare funcție:
+
+clear_screen(u32 color):
+ Această funcție are ca efect golirea întregului ecran prin setarea culorii tuturor pixelilor la o anumită valoare.
+
+
+draw_rect_in_pixels(int x0, int y0, int x1, int y1, u32 color):
+ Această funcție este folosită pentru a desena un dreptunghi format din pixeli pe ecran sau pe o suprafață grafică.
+
+
+draw_arena_borders(float arena_x, float arena_y, u32 color):
+ Această funcție este utilizată pentru a desena granițele arenei de joc în care se mișcă obiectele din joc.
+
+
+draw_rect(float x, float y, float half_size_x, float half_size_y, u32 color):
+ Această funcție transformă vectorii în pixeli, apoi apelează draw_rect_in_pixels() pentru a desena dreptunghiul.
+
+
+draw_text(const char *text, float x, float y, float size, u32 color):
+Această funcție este utilizată pentru a desena un text pe ecran.
+
+
+draw_number(int number, float x, float y, float size, u32 color):
+ Această funcție este utilizată pentru a desena numere pe aceeași idee ca funcția anterioară de desenare a textului.
+
+Toate aceste funcții lucrează împreună pentru a permite redarea de elemente în joc, cum ar fi arena de joc, obiectele de joc, text și numere.
+
+
+Game.cpp:
+
+partea 1 game.cpp:
+
+simulate_player(float *p, float *dp, float ddp, float dt):
+Această funcție simulează mișcarea unui jucător.
+Ea folosește accelerarea ddp și pasul de timp dt pentru a calcula și actualiza noua poziție p și viteza dp a jucătorului.
+
+
+aabb_vs_aabb(float p1x, float p1y, float hs1x, float hs1y, float p2x, float p2y, float hs2x, float hs2y):
+ Această funcție folosește metoda Axis-Aligned Bounding Box (AABB) pentru a detecta dacă are loc o coliziune între două obiecte rectangulare.
+
+
+simulate_game(Input* input,float dt):
+ Aceasta este funcția principală a jocului.
+  Ea se ocupă cu sincronizarea tuturor componentelor - mișcarea jucătorilor și a mingii, detectarea coliziunilor, actualizarea scorurilor și desenarea jocului în sine.
+
+#define is_down(b), #define pressed(b) și #define released(b):
+ Acestea sunt macro-uri care facilitează interacțiunea cu sistemul de input, permițând verificarea stării diferitelor butoane.
+
+
+draw_number(player_1_score, -20, 40, 1.f, 0x999999) și draw_number(player_2_score, 20, 40, 1.f, 0x999999):
+ Aceste funcții desenează scorurile jucătorilor pe ecran.
+
+
+draw_rect(ball_p_x, ball_p_y, ball_half_size, ball_half_size, 0xffffff),
+ draw_rect(80, player_1_p, player_half_size_x, player_half_size_y, 0x00ff22)
+  și draw_rect(-80, player_2_p, player_half_size_x, player_half_size_y, 0x00ff22):
+ Aceste funcții desenează mingea și jucătorii pe ecran.
+Aceste funcții și comenzi reprezintă componentele cheie ale acestui joc Pong, controlând logica de bază a jocului, gestionarea inputului, simularea și desenarea stării jocului.
+
+
+Partea 2 Game.cpp:
+
+ball_p_x += ball_dp_x * dt; și ball_p_y += ball_dp_y * dt;:
+Simulează mișcarea mingii actualizând poziția ei pe axa X și Y, respectiv, folosind viteza curentă (ball_dp_x, ball_dp_y) și durata de timp (dt).
+
+
+aabb_vs_aabb(...):
+ Verifică dacă a avut loc o coliziune între două obiecte dreptunghiulare prin utilizarea metodei Axis-Aligned Bounding Box.
+
+ball_dp_x *= -1 * acceleration_factor;:
+Inversează direcția de mișcare a mingii pe axa X în urma unei coliziuni și crește viteza ei folosind acceleration_factor.
+
+ball_dp_y = (ball_p_y - player_1_p) * 2 + player_1_dp * .75f;:
+ Atunci când minge se ciocnește cu un jucător, direcția de deplasare a mingii pe axa verticală va fi influențată de direcția în care se mișcă jucătorul în acel moment.
+
+
+acceleration_factor = 1.1f * acceleration_factor;:
+Accelerează mingea după fiecare coliziune cu un jucător prin creșterea factorului de accelerație cu 10%.
+
+draw_number(player_1_score, -20, 40, 1.f, 0x999999);:
+Desenează pe ecran scorul jucătorului 1.
+
+
+if (pressed(BUTTON_ENTER)) {...}:
+ Verifică dacă butonul Enter a fost apăsat pentru a începe jocul.
+
+draw_text("TRY ME BRO", -80, -5, 1.2, 0xff0000);:
+
+Afișează diferite texte pe ecran, cum ar fi meniurile de joc ("TRY ME BRO", "MULTIPLAYER").
+
+Fiecare dintre aceste linii de cod contribuie la simularea gameplay-ului, gestionarea coliziunilor, actualizarea scorurilor și afișarea interfeței utilizator pe ecran

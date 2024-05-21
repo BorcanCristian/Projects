@@ -1,0 +1,141 @@
+#include <windows.h>
+
+// Am modificat cmake pentru a putea folosi win32/ int WinMain.
+
+bool running = true;
+
+void* buffer_memory;
+int buffer_width;
+int buffer_height;
+BITMAPINFO buffer_bitmap_info;
+
+
+LRESULT CALLBACK window_callback( HWND hwnd, UINT uMSG, WPARAM wParam, LPARAM lParm)
+{
+    LRESULT result = 0;  // Variabila result
+    switch (uMSG)
+    {
+        case WM_CLOSE:
+            case WM_DESTROY:
+        {
+         running = false;
+        }
+            break;
+
+        case WM_SIZE:
+        {
+            RECT rect; //rect struct
+            GetClientRect(hwnd, &rect);
+
+            //Linia de cod int width = rect.right - rect.left; calculează lățimea unui dreptunghi prin scăderea valorii marginii stângi (rect.left) din valoarea marginii drepte (rect.right).
+            buffer_width = rect.right - rect.left;
+
+
+
+            //Linia buffer_height = rect.bottom - rect.top; calculează înălțimea unui dreptunghi prin substracția valorii marginii superioare (rect.top) din valoarea marginii inferioare (rect.bottom).
+            buffer_height = rect.bottom - rect.top;
+
+
+
+
+            //Linia de cod int buffer_size = buffer_width * buffer_height*sizeof(unsigned int); înmulțește lățimea (width) cu înălțimea (height) pentru a obține numărul total de pixeli în dreptunghi.
+            int buffer_size = buffer_width * buffer_height * sizeof(unsigned int);
+            //Apoi acest număr de pixeli este înmulțit cu sizeof(unsigned int), care indică dimensiunea în byte a unui tip unsigned int în C++. Prin urmare, buffer_size va reprezenta dimensiunea totală în byte necesară pentru a stoca toți pixelii.
+            //Această linie de cod este utilă atunci când ai nevoie să aloce memorie pentru a stoca o imagine sau o fereastră de pixeli într-un buffer unsigned int.
+
+
+            //Linia if (buffer_memory) VirtualFree(buffer_memory, 0, MEM_RELEASE); verifică mai întâi dacă buffer_memory nu este NULL. Dacă nu este NULL, atunci memtoria alocată anterior pentru buffer_memory este eliberată.
+            if (buffer_memory) VirtualFree(buffer_memory, 0, MEM_RELEASE);
+
+            buffer_memory = VirtualAlloc(0,buffer_size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+        }
+
+buffer_bitmap_info.bmiHeader.biSize = sizeof(buffer_bitmap_info.bmiHeader);
+buffer_bitmap_info.bmiHeader.biWidth = buffer_width;
+buffer_bitmap_info.bmiHeader.biHeight = buffer_height;
+        buffer_bitmap_info.bmiHeader.biPlanes = 1;
+        buffer_bitmap_info.bmiHeader.biBitCount = 32;
+        buffer_bitmap_info.bmiHeader.biCompression = BI_RGB;
+
+        break;
+
+
+default:
+        {
+            result = DefWindowProc(hwnd, uMSG, wParam,lParm); // Pentru a intoarce un mesaj, daca lipseste nu compielza.
+        }
+
+    }
+  return result;
+}
+
+int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR IpCmdLine, int nShowCmd)
+{
+    // Create a WINDOW CLASS
+    WNDCLASS window_class = {};
+    window_class.style = CS_HREDRAW | CS_VREDRAW;
+    window_class.lpszClassName = "Game Window Class";
+    window_class.lpfnWndProc = window_callback;
+
+
+    // Register CLASS
+
+    RegisterClass(&window_class);
+
+
+    // Create WINDOW
+    HWND window = CreateWindow(window_class.lpszClassName, //lpClassName
+        "PlatformerGame!",                   //lpWindowName
+        WS_OVERLAPPEDWINDOW | WS_VISIBLE,    //dwStyle
+        CW_USEDEFAULT,                       //x
+        CW_USEDEFAULT,                       //y
+        1280,                                //nWidth
+        720,                                 //nHeight
+        0,                                   //hWndParent
+        0,                                   //hMenu
+        hInstance,                           //hInstance
+        0,                                   //lpParam
+        );
+
+    HDC hdc = GetDC(window);
+
+
+    while (running)  // Bucla pentru a ramane fereastra pornita.
+    {
+        // Input
+        MSG message;
+        while (PeekMessage(&message, window, 0 , 0 , PM_REMOVE ))
+        {
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+        }
+
+        //Simuate
+        unsigned int* pixel = (unsigned int*) buffer_memory;
+        for (int y = 0; y < buffer_height; y++)
+        {
+            for (int x = 0; x < buffer_width; x++)
+            {
+              *pixel++ = x*y; // Indigo 0x4b0082 // BLue 0x0000ff
+            }                      // Black 0x000000
+
+        }
+
+        // Render
+        StretchDIBits(
+                    hdc,
+                    0,
+                    0,
+                    buffer_width,
+                    buffer_height,
+                    0,
+                    0,
+                    buffer_width,
+                    buffer_height,
+                    buffer_memory,
+                    &buffer_bitmap_info,
+                    DIB_RGB_COLORS,
+                    SRCCOPY
+                    );
+    }
+}
